@@ -163,7 +163,7 @@ const _isOK = (c, p, list) => {
 
 const _runCreate = async (c) => {
     logTask('_runCreate');
-    const { args } = c.program;
+    const { args, ci } = c.program;
 
     let data = {
         defaultVersion: '0.1.0',
@@ -189,53 +189,67 @@ const _runCreate = async (c) => {
         inputProjectName = inputProjectNameObj.inputProjectName;
     }
 
-    const {
-        inputAppTitle, inputAppID, inputVersion, inputTemplate, inputSupportedPlatforms
-    } = await inquirer.prompt([{
-        name: 'inputAppTitle',
-        type: 'input',
-        default: data.defaultAppTitle,
-        validate: val => !!val || 'Please enter a title',
-        message: 'What\'s your project Title?'
-    }, {
-        name: 'inputAppID',
-        type: 'input',
-        default: () => {
-            data.appID = `com.mycompany.${inputProjectName.replace(/\s+/g, '').toLowerCase()}`;
-            return data.appID;
-        },
-        validate: id => !!id.match(/[a-z]+\.[a-z0-9]+\.[a-z0-9]+/) || 'Please enter a valid appID (com.test.app)',
-        message: 'What\'s your App ID?'
-    }, {
-        name: 'inputVersion',
-        type: 'input',
-        default: data.defaultVersion,
-        validate: v => !!semver.valid(semver.coerce(v)) || 'Please enter a valid semver version (1.0.0, 42.6.7.9.3-alpha, etc.)',
-        message: 'What\'s your Version?'
-    }, {
-        name: 'inputTemplate',
-        type: 'list',
-        message: 'What template to use?',
-        default: data.defaultTemplate,
-        choices: data.optionTemplates.keysAsArray
-    }, {
-        name: 'inputSupportedPlatforms',
-        type: 'checkbox',
-        pageSize: 20,
-        message: 'What platforms would you like to use?',
-        validate: val => !!val.length || 'Please select at least a platform',
-        default: data.optionPlatforms.keysAsArray,
-        choices: data.optionPlatforms.keysAsArray
-    }]);
+    if (!ci) {
+        const {
+            inputAppTitle, inputAppID, inputVersion, inputTemplate, inputSupportedPlatforms
+        } = await inquirer.prompt([{
+            name: 'inputAppTitle',
+            type: 'input',
+            default: data.defaultAppTitle,
+            validate: val => !!val || 'Please enter a title',
+            message: 'What\'s your project Title?'
+        }, {
+            name: 'inputAppID',
+            type: 'input',
+            default: () => {
+                data.appID = `com.mycompany.${inputProjectName.replace(/\s+/g, '').toLowerCase()}`;
+                return data.appID;
+            },
+            validate: id => !!id.match(/[a-z]+\.[a-z0-9]+\.[a-z0-9]+/) || 'Please enter a valid appID (com.test.app)',
+            message: 'What\'s your App ID?'
+        }, {
+            name: 'inputVersion',
+            type: 'input',
+            default: data.defaultVersion,
+            validate: v => !!semver.valid(semver.coerce(v)) || 'Please enter a valid semver version (1.0.0, 42.6.7.9.3-alpha, etc.)',
+            message: 'What\'s your Version?'
+        }, {
+            name: 'inputTemplate',
+            type: 'list',
+            message: 'What template to use?',
+            default: data.defaultTemplate,
+            choices: data.optionTemplates.keysAsArray
+        }, {
+            name: 'inputSupportedPlatforms',
+            type: 'checkbox',
+            pageSize: 20,
+            message: 'What platforms would you like to use?',
+            validate: val => !!val.length || 'Please select at least a platform',
+            default: data.optionPlatforms.keysAsArray,
+            choices: data.optionPlatforms.keysAsArray
+        }]);
 
 
-    data = {
-        ...data, inputProjectName, inputAppTitle, inputAppID, inputVersion, inputTemplate, inputSupportedPlatforms
-    };
+        data = {
+            ...data, inputProjectName, inputAppTitle, inputAppID, inputVersion, inputTemplate, inputSupportedPlatforms
+        };
+        data.optionTemplates.selectedOption = inputTemplate;
+        data.optionPlatforms.selectedOptions = inputSupportedPlatforms;
+    } else {
+        data = {
+            ...data,
+            inputProjectName,
+            inputAppTitle: data.defaultAppTitle,
+            inputAppID: `com.mycompany.${inputProjectName.replace(/\s+/g, '').toLowerCase()}`,
+            inputVersion: data.defaultVersion
+        };
+        data.optionTemplates.selectedOption = data.defaultTemplate;
+        data.optionPlatforms.selectedOptions = data.optionPlatforms.keysAsArray;
+    }
 
-    data.optionTemplates.selectedOption = inputTemplate;
-    data.optionPlatforms.selectedOptions = inputSupportedPlatforms;
     _prepareProjectOverview(c, data);
+
+    if (ci) return _generateProject(c, data);
 
     const { confirm } = await inquirer.prompt({
         type: 'confirm',
@@ -263,7 +277,7 @@ const _generateProject = (c, data) => {
 
     const templates = {};
 
-
+    console.log('execAsync');
     return executeAsync(c, `npm show ${data.optionTemplates.selectedOption} version`).then((v) => {
         logTask(`_generateProject:${data.optionTemplates.selectedOption}:${v}`, chalk.grey);
 

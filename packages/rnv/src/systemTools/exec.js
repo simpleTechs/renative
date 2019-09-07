@@ -81,6 +81,9 @@ const _execute = (c, command, opts = {}) => {
         child.stdout.on('data', printLastLine);
     }
 
+    console.log('asda', cleanCommand, mergedOpts);
+    // return require('shelljs').exec(cleanCommand, mergedOpts);
+
     return child.then((res) => {
         spinner && child.stdout.off('data', printLastLine);
         !silent && !mono && spinner.succeed(`Executing: ${logMessage}`);

@@ -58,7 +58,6 @@ export const logWelcome = () => {
 };
 
 let _messages = [];
-let _currentCommand;
 let _currentProcess;
 let _isInfoEnabled = false;
 let _c;
@@ -72,8 +71,6 @@ export const configureLogger = (c, process, command, subCommand, isInfoEnabled) 
     _c = c;
     _c.timeStart = new Date();
     _currentProcess = process;
-    _currentCommand = command;
-    _currentSubCommand = subCommand;
     _isInfoEnabled = isInfoEnabled;
     _isMono = c.program.mono;
     if (_isMono) {
