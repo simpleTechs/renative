@@ -1,35 +1,18 @@
+/* eslint-disable global-require */
 import path from 'path';
 import fs from 'fs';
-import chalk from 'chalk';
 import {
-    logTask,
-    logError,
     logWarning,
     getAppFolder,
-    isPlatformActive,
-    logDebug,
-    getAppVersion,
-    getAppTitle,
-    getEntryFile,
-    writeCleanFile,
-    getAppTemplateFolder,
     getAppId,
     getConfigProp,
-    getIP,
-    getBuildFilePath,
-    logSuccess,
-    getBuildsFolder,
 } from '../../common';
-import { copyBuildsFolder } from '../../projectTools/projectParser';
 import { inquirerPrompt } from '../../systemTools/prompt';
 import { IOS, TVOS } from '../../constants';
-import { getMergedPlugin, parsePlugins } from '../../pluginTools';
+import { parsePlugins } from '../../pluginTools';
 import { getAppFolderName } from './index';
 import { parseProvisioningProfiles } from './provisionParser';
-import { copyFolderContentsRecursiveSync, copyFileSync, mkdirSync, readObjectSync, mergeObjects, writeObjectSync } from '../../systemTools/fileutils';
-
-const xcode = require('xcode');
-
+import { writeObjectSync } from '../../systemTools/fileutils';
 
 export const parseXcodeProject = async (c, platform) => {
     // PROJECT
@@ -78,6 +61,7 @@ export const parseXcodeProject = async (c, platform) => {
 };
 
 const _parseXcodeProject = (c, platform, config) => new Promise((resolve, reject) => {
+    const xcode = require('xcode');
     const appFolder = getAppFolder(c, platform);
     const appFolderName = getAppFolderName(c, platform);
     const projectPath = path.join(appFolder, `${appFolderName}.xcodeproj/project.pbxproj`);
@@ -201,23 +185,3 @@ const _parseXcodeProject = (c, platform, config) => new Promise((resolve, reject
         resolve();
     });
 });
-
-
-// export const parseXcodeProjec2() => new Promise((resolve, reject) => {
-// const projectPath = path.join(appFolder, `${appFolderName}.xcodeproj/project.pbxproj`);
-// const xcodeProj = xcode.project(projectPath);
-// xcodeProj.parse(() => {
-//     const appId = getAppId(c, platform);
-//     if (teamID) {
-//         xcodeProj.updateBuildProperty('DEVELOPMENT_TEAM', teamID);
-//     } else {
-//         xcodeProj.updateBuildProperty('DEVELOPMENT_TEAM', '""');
-//     }
-//
-//     xcodeProj.addTargetAttribute('ProvisioningStyle', provisioningStyle);
-//     xcodeProj.addBuildProperty('CODE_SIGN_STYLE', provisioningStyle);
-//     xcodeProj.updateBuildProperty('PRODUCT_BUNDLE_IDENTIFIER', appId);
-//
-//     resolve();
-// });
-// })
