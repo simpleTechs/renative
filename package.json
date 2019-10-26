@@ -62,7 +62,7 @@
         "build": "lerna run build",
         "lerna": "npx lerna bootstrap",
         "link": "cd ./packages/rnv && yarn link",
-        "publish-canary": "lerna publish --canary --yes",
+        "publish-canary": "lerna publish --canary",
         "postinstall": "npx jetify",
         "prePublish": "rnv hooks run -x prePublish",
         "publish": "npm run prePublish && npm run publish:rnv && npm run publish:renative && npm run publish:hello && npm run publish:blank && npm run publish:sink",
