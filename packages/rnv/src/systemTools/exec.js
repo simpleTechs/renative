@@ -395,7 +395,7 @@ export const cleanNodeModules = c => new Promise((resolve, reject) => {
 export const npmInstall = async (failOnError = false) => {
     logTask('npmInstall');
 
-    return executeAsync('npm install')
+    return executeAsync('yarn')
         .catch((e) => {
             if (failOnError) {
                 return logError(e);

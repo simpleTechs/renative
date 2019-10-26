@@ -331,11 +331,11 @@ export const configureNodeModules = c => new Promise((resolve, reject) => {
         if (!fs.existsSync(c.paths.project.nodeModulesDir)) {
             logWarning(
                 `Looks like your node_modules folder ${chalk.white(c.paths.project.nodeModulesDir)} is missing! Let's run ${chalk.white(
-                    'npm install',
+                    'yarn',
                 )} first!`,
             );
         } else {
-            logWarning(`Looks like your node_modules out of date! Let's run ${chalk.white('npm install')} first!`);
+            logWarning(`Looks like your node_modules out of date! Let's run ${chalk.white('yarn')} first!`);
         }
         c._requiresNpmInstall = false;
         npmInstall().then(() => resolve()).catch(e => reject(e));
