@@ -168,10 +168,6 @@ const configureNextIfRequired = async (c) => {
 
     // add/replace babel
     if (!fs.existsSync(path.join(dir, 'babel.config.js'))) fs.copyFileSync(path.join(platformTemplateDir, 'babel.config.js'), path.join(dir, 'babel.config.js'));
-    const currentBabel = require(path.join(dir, 'babel.config.js'));
-    if (currentBabel.plugins?.[0]?.[1]?.alias?.renative !== './node_modules/renative') {
-        fs.copyFileSync(path.join(platformTemplateDir, 'babel.config.js'), path.join(dir, 'babel.config.js'));
-    }
 };
 
 export const runWebNext = async (c, platform, port) => {
