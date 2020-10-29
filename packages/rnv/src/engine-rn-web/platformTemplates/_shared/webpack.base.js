@@ -21,7 +21,7 @@ function generateConfig(config) {
 
     const rules = {};
     rules.babel = {
-        test: /\.js$/,
+        test: /\.(tsx|ts|js|mjs|jsx)$/,
         include: config.modulePaths,
         use: {
             loader: 'babel-loader',
@@ -82,7 +82,8 @@ function generateConfig(config) {
             ...config,
             debug: process.env.DEBUG,
             debugIp: process.env.DEBUG_IP,
-            debugPort: 8079,
+            remoteDebugScript: process.env.DEBUG_SCRIPT,
+            debugPort: process.env.DEBUG_PORT,
             platform: process.env.PLATFORM,
             environment: config.environment,
         },

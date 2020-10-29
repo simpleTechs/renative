@@ -1,4 +1,4 @@
-import { Exec, Common, PluginTools, FileUtils, Logger } from 'rnv';
+import { Logger } from 'rnv';
 import path from 'path';
 import fs from 'fs';
 import jsdoc2md from 'jsdoc-to-markdown';
@@ -20,7 +20,6 @@ sidebar_label: ${title}
 `;
 
     const result = await jsdoc2md.render({ files: `${c.paths.project.dir}/packages/rnv/*.js` });
-    // const result = await jsdoc2md.render({ source: `${c.paths.project.dir}/packages/ultrasonic/api/actionSheet` });
 
     output += `${result}\n`;
 

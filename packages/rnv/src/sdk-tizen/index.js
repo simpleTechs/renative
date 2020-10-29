@@ -9,7 +9,7 @@ import {
     CLI_TIZEN_EMULATOR,
     CLI_TIZEN,
     CLI_SDB_TIZEN,
-    WEINRE_ENABLED_PLATFORMS,
+    REMOTE_DEBUGGER_ENABLED_PLATFORMS,
     RNV_PROJECT_DIR_NAME,
     RNV_SERVER_DIR_NAME
 } from '../core/constants';
@@ -381,12 +381,13 @@ Please create one and then edit the default target from ${c.paths.workspace.dir}
             }
         }
         try {
-            if(wgtClean !== wgt) {
-                logInfo(`Your app name contains characters like spaces, changing output from "${wgt}" to "${wgtClean}"`)
-                fsRenameSync(path.join(tOut, wgt), path.join(tOut, wgtClean))
+            if (wgtClean !== wgt) {
+                logInfo(`Your app name contains characters like spaces, changing output from "${
+                    wgt}" to "${wgtClean}"`);
+                fsRenameSync(path.join(tOut, wgt), path.join(tOut, wgtClean));
             }
         } catch (err) {
-            logError(err)
+            logError(err);
         }
         try {
             await execCLI(
@@ -513,7 +514,7 @@ export const runTizen = async (c, target) => {
         await _runTizenSimOrDevice(c);
     } else {
         const isPortActive = await checkPortInUse(c, platform, c.runtime.port);
-        const isWeinreEnabled = WEINRE_ENABLED_PLATFORMS.includes(platform) && !bundleAssets && !hosted;
+        const isWeinreEnabled = REMOTE_DEBUGGER_ENABLED_PLATFORMS.includes(platform) && !bundleAssets && !hosted;
 
         if (!isPortActive) {
             logInfo(
@@ -613,9 +614,11 @@ export const configureProject = c => new Promise((resolve) => {
 
     addSystemInjects(c, injects);
 
+    // the file should already be copied via copyAssets, same input and output fil
+    const file = path.join(getPlatformProjectDir(c), configFile);
     writeCleanFile(
-        path.join(getTemplateProjectDir(c), configFile),
-        path.join(getPlatformProjectDir(c), configFile),
+        file,
+        file,
         injects, null, c
     );
 
