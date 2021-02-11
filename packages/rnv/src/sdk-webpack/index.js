@@ -53,7 +53,7 @@ import { getValidLocalhost } from '../core/utils';
 
 import { REMOTE_DEBUG_PORT, RNV_NODE_MODULES_DIR, RNV_PROJECT_DIR_NAME, RNV_SERVER_DIR_NAME } from '../core/constants';
 
-const WEBPACK = path.join(RNV_NODE_MODULES_DIR, 'webpack/bin/webpack.js');
+const WEBPACK = require.resolve('webpack-cli/bin/cli.js'); // (path.join(RNV_NODE_MODULES_DIR, 'webpack/bin/webpack.js');)
 const WEBPACK_DEV_SERVER = path.join(RNV_NODE_MODULES_DIR, 'webpack-dev-server/bin/webpack-dev-server.js');
 
 export const waitForWebpack = async (c, suffix = 'assets/bundle.js') => {
